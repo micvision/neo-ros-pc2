@@ -3,6 +3,7 @@ neo-ros
 
 ## Dependencies
 1. [libneo](https://www.github.com/micvision/neo-sdk)
+	
 	-. See the readme file to install it.
 
 For a quick installation on Linux:
@@ -28,7 +29,7 @@ sudo ldconfig
 ```
 2. [pcl](http://www.pointclouds.org)
 
-	1. When you install ROS, the PCL will be installed automatically.
+	When you install ROS, the PCL will be installed automatically.
 
 3. [pointcloud_to_laserscan](http://wiki.ros.org/pointcloud_to_laserscan)
 
@@ -65,8 +66,8 @@ roslaunch neo_ros_pc2 view_neo_laser_scan.launch
 
 ## Environment
 
-*. OS: ubuntu 16.04
+1. OS: ubuntu 16.04
 
-*. ROS: Kinetic
+2. ROS: Kinetic
 
 note: Other OS and ROS should also can compile and run correct, but you should modify some files.
