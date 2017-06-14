@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find neo_ros_pc2)/launch/neo2scan.launch" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neo_ros_pc2)/rviz/neo_laser_scan.rviz" />
+</launch>
