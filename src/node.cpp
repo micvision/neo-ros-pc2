@@ -42,15 +42,10 @@ void publish_scan(ros::Publisher *pub,
     int32_t range;
     float x;
     float y;
-    int i = 0;
 
     cloud.height = 1;
     cloud.width = scan->samples.size();
     cloud.points.resize(cloud.width * cloud.height);
-
-	cloud1.height = 1;
-	cloud1.width = scan->samples.size();
-	cloud1.points.resize(cloud.width * cloud.height);
 
     for (const neo::sample& sample : scan->samples)
     {
@@ -63,17 +58,7 @@ void publish_scan(ros::Publisher *pub,
 
         cloud.points[i].x = x;
         cloud.points[i].y = y;
-		//cloud1.points[i].x = range;
-		//cloud1.points[i].y = angle;
-        i++;
     }
-	std::ostringstream s1_polar, s1;
-    s1_polar << "/home/tyu/pcl/pcd/test_polar_" << pcd_index << ".pcd";
-    s1 << "/home/tyu/pcl/pcd/test_" << pcd_index << ".pcd";
-	pcd_index++;
-	// std::string s2 = s1.str();
-    //pcl::io::savePCDFileASCII(s1_polar.str(), cloud1);
-    //pcl::io::savePCDFileASCII(s1.str(), cloud);
 
     //Convert pcl PC to ROS PC2
     pcl::toROSMsg(cloud, cloud_msg);
