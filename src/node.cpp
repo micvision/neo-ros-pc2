@@ -34,14 +34,14 @@
 void publish_scan(ros::Publisher *pub,
                   const neo::scan *scan, std::string frame_id)
 {
-    pcl::PointCloud <pcl::PointXYZ> cloud, cloud1;
+    pcl::PointCloud <pcl::PointXYZ> cloud;
     sensor_msgs::PointCloud2 cloud_msg;
-    static int pcd_index = 0;
 
     float angle;
     int32_t range;
     float x;
     float y;
+    int i = 0;
 
     cloud.height = 1;
     cloud.width = scan->samples.size();
@@ -58,6 +58,7 @@ void publish_scan(ros::Publisher *pub,
 
         cloud.points[i].x = x;
         cloud.points[i].y = y;
+        i++;
     }
 
     //Convert pcl PC to ROS PC2
