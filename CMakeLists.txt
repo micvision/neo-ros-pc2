@@ -6,7 +6,10 @@ find_package(catkin REQUIRED COMPONENTS
         roscpp
         sensor_msgs
         pcl_msgs
+        dynamic_reconfigure
         )
+
+generate_dynamic_reconfigure_options(cfg/filter.cfg)
 
 find_package(PCL REQUIRED)
 find_package(Neo REQUIRED)
@@ -29,6 +32,7 @@ catkin_package()
 
 add_executable(neo_node_pc2 src/node.cpp)
 
+add_dependencies(neo_node_pc2 neo_ros_pc2_gencfg)
 target_link_libraries(neo_node_pc2 ${catkin_LIBRARIES} ${LIBNEO_LIBRARY} ${PCL_LIBRARIES})
 
 target_include_directories(neo_node_pc2 SYSTEM PRIVATE ${LIBNEO_INCLUDE_DIR})
