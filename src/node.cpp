@@ -31,11 +31,41 @@
 #include <pcl/io/pcd_io.h>
 #include <neo/neo.hpp>
 
+#include <dynamic_reconfigure/server.h>
+#include <neo_ros_pc2/FilterConfig.h>
+#include <neo_ros_pc2/neo_filter.h>
+
+typedef dynamic_reconfigure::Server<neo_ros_pc2::FilterConfig> FilterConfigServer;
+
+neo_filter::Config filter_config;
+
+void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
+    filter_config.MedianFilter = config.median_filter_;
+    filter_config.MedianFilterWindowsSize = config.median_filter_windows_size_;
+    filter_config.ClosedPointFilter = config.close_point_filter_;
+    filter_config.ClosePointDistance = config.close_point_distance_;
+
+    ROS_DEBUG("Reconfigure Request:");
+    ROS_DEBUG("  median_filter: %s", config.median_filter_ ? "True" : "False");
+    ROS_DEBUG("  median_filter_windows_size_: %d", config.median_filter_windows_size_);
+    ROS_DEBUG("  close_point_filter: %s", config.close_point_filter_ ? "True" : "False");
+    ROS_DEBUG("  close_point_distance: %d", config.close_point_distance_);
+
+}
+
+
+void median_filter(pcl::PointCloud<pcl::PointXYZ> *pointcloud) {
+    ROS_DEBUG("median filter");
+
+}
+
 void publish_scan(ros::Publisher *pub,
                   const neo::scan *scan, std::string frame_id)
 {
     pcl::PointCloud <pcl::PointXYZ> cloud;
+    pcl::PointCloud <pcl::PointXYZ> cloud_polar;
     sensor_msgs::PointCloud2 cloud_msg;
+
 
     float angle;
     int32_t range;
@@ -47,9 +77,17 @@ void publish_scan(ros::Publisher *pub,
     cloud.width = scan->samples.size();
     cloud.points.resize(cloud.width * cloud.height);
 
+    cloud_polar.height = 1;
+    cloud_polar.width = cloud.width;
+    cloud_polar.resize(cloud_polar.width * cloud_polar.height);
+
     for (const neo::sample& sample : scan->samples)
     {
         range = sample.distance;
+        if (filter_config.ClosedPointFilter) {
+            if (range < filter_config.ClosePointDistance)
+                continue;
+        }
         angle = ((float)sample.angle / 1000); //millidegrees to degrees
 
         //Polar to Cartesian Conversion
@@ -58,14 +96,24 @@ void publish_scan(ros::Publisher *pub,
 
         cloud.points[i].x = x;
         cloud.points[i].y = y;
+
+        cloud_polar.points[i].x = float(range);
+        cloud_polar.points[i].y = angle;
         i++;
     }
+    cloud.width = i;
+    cloud_polar.width = i;
+    cloud.points.resize(i * cloud.height);
+    cloud_polar.points.resize(i * cloud_polar.height);
+    if (filter_config.MedianFilter)
+        median_filter(&cloud_polar);
 
     //Convert pcl PC to ROS PC2
     pcl::toROSMsg(cloud, cloud_msg);
     cloud_msg.header.frame_id = frame_id;
 
     ROS_DEBUG("Publishing a full scan");
+    ROS_DEBUG("Scan number: %d", i);
     pub->publish(cloud_msg);
 }
 
@@ -105,6 +153,12 @@ int main(int argc, char *argv[]) try
 
     //Start Scan
     device.start_scanning();
+
+    // dynamic_reconfigure server
+    FilterConfigServer server;
+    FilterConfigServer::CallbackType f;
+    f = boost::bind(&callback, _1, _2);
+    server.setCallback(f);
 
     while (ros::ok())
     {
