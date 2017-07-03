@@ -65,6 +65,7 @@ void publish_scan(ros::Publisher *pub,
     pcl::PointCloud <pcl::PointXYZ> cloud;
     pcl::PointCloud <pcl::PointXYZ> cloud_polar;
     sensor_msgs::PointCloud2 cloud_msg;
+    ros::Time ros_time_now = ros::Time::now();
 
 
     float angle;
@@ -111,6 +112,7 @@ void publish_scan(ros::Publisher *pub,
     //Convert pcl PC to ROS PC2
     pcl::toROSMsg(cloud, cloud_msg);
     cloud_msg.header.frame_id = frame_id;
+    cloud_msg.header.stamp = ros_time_now;
 
     ROS_DEBUG("Publishing a full scan");
     ROS_DEBUG("Scan number: %d", i);
