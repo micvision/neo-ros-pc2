@@ -3,8 +3,8 @@ neo-ros
 
 ## Dependencies
 1. [libneo](https://www.github.com/micvision/neo-sdk)
-	
-	-. See the readme file to install it.
+
+  -. See the readme file to install it.
 
 For a quick installation on Linux:
 
@@ -29,12 +29,21 @@ sudo ldconfig
 ```
 2. [pcl](http://www.pointclouds.org)
 
-	When you install ROS, the PCL will be installed automatically.
+  When you install ROS, the PCL will be installed automatically.
 
 3. [pointcloud_to_laserscan](http://wiki.ros.org/pointcloud_to_laserscan)
 
 ```bash
 sudo apt-get install ros-${ROS_DISTRO}-pointcloud-to-laserscan
+```
+## Installation
+
+```shell
+wget https://raw.githubusercontent.com/micvision/neo-ros-pc2/master/script/installNeoROS.sh
+## adding execute privileges
+chmod +x installNeoROS.sh
+## then install package, with a valid catkin workspace
+./installNeoROS.sh (catkin workspace)
 ```
 
 
@@ -46,7 +55,7 @@ transform to `scan`(`sensor_msgs/LaserScan` msg) via [pointcloud_to_laserscan](h
 
 ## Usage
 1. Serial port
-If the serial port on your computer is not `/dev/ttyUSB0`, change the serial_port in launch file.
+  If the serial port on your computer is not `/dev/ttyUSB0`, change the serial_port in launch file.
 
 2. Run without visible(without rviz):
 ``` bash
