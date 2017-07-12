@@ -34,20 +34,29 @@
 #include <dynamic_reconfigure/server.h>
 #include <neo_ros_pc2/FilterConfig.h>
 #include <neo_ros_pc2/neo_filter.h>
+#include <neo_ros_pc2/line_param.h>
 
 typedef dynamic_reconfigure::Server<neo_ros_pc2::FilterConfig> FilterConfigServer;
 
 neo_filter::Config filter_config;
+line_param::Config line_param_config;
 
 void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
+    // filter config
     filter_config.MedianFilter = config.median_filter_;
-    filter_config.MedianFilterWindowsSize = config.median_filter_windows_size_;
+    filter_config.MedianFilterWindowsSize = config.median_filter_half_windows_size_ * 2 + 1;
     filter_config.ClosedPointFilter = config.close_point_filter_;
     filter_config.ClosePointDistance = config.close_point_distance_;
 
+    // line parameter config
+    line_param_config.LargestSquareDistanceOfLine = static_cast<float>(config.largest_square_distance_of_line_);
+    line_param_config.CollinearityParam = static_cast<float>(config.collinearity_param_);
+    line_param_config.InterpolationPointNum = config.interpolation_point_num_;
+    line_param_config.NumPointsOfLine = config.num_points_of_line_;
+
     ROS_DEBUG("Reconfigure Request:");
     ROS_DEBUG("  median_filter: %s", config.median_filter_ ? "True" : "False");
-    ROS_DEBUG("  median_filter_windows_size_: %d", config.median_filter_windows_size_);
+    ROS_DEBUG("  median_filter_windows_size_: %d", config.median_filter_half_windows_size_);
     ROS_DEBUG("  close_point_filter: %s", config.close_point_filter_ ? "True" : "False");
     ROS_DEBUG("  close_point_distance: %d", config.close_point_distance_);
 
