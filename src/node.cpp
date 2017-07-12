@@ -47,6 +47,7 @@ void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
     filter_config.MedianFilterWindowsSize = config.median_filter_half_windows_size_ * 2 + 1;
     filter_config.ClosedPointFilter = config.close_point_filter_;
     filter_config.ClosePointDistance = config.close_point_distance_;
+    filter_config.MaxDistance = config.max_distance_;
 
     // line parameter config
     line_param_config.LargestSquareDistanceOfLine = static_cast<float>(config.largest_square_distance_of_line_);
