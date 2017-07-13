@@ -30,7 +30,7 @@ link_directories(
 
 catkin_package()
 
-add_executable(neo_node_pc2 src/node.cpp)
+add_executable(neo_node_pc2 src/node.cpp src/line_segment.cpp src/line_extraction.cpp)
 
 add_dependencies(neo_node_pc2 neo_ros_pc2_gencfg)
 target_link_libraries(neo_node_pc2 ${catkin_LIBRARIES} ${LIBNEO_LIBRARY} ${PCL_LIBRARIES})

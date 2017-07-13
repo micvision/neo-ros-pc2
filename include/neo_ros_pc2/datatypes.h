@@ -22,22 +22,16 @@
  * SOFTWARE.
  */
 
-#ifndef _NEO_FILTER_H_
-#define _NEO_FILTER_H_
+#ifndef _DATATYPES_H_
+#define _DATATYPES_H_
 
-namespace neo_filter {
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
 
-struct Config {
-    bool ClosedPointFilter;
-    int ClosePointDistance;
-    int MaxDistance;
+typedef pcl::PointCloud<pcl::PointXY> PointCloudXY;
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloudXYZ;
 
-    bool MedianFilter;
-    int MedianFilterWindowsSize;
-
-};
-
-};
+typedef pcl::PointXY LineParam;
 
 
-#endif  // end _NEO_FILTER_H_
+#endif // _DATATYPES_H_

@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _NEO_FILTER_H_
-#define _NEO_FILTER_H_
+#ifndef _LINE_EXTRACTION_H_
+#define _LINE_EXTRACTION_H_
 
-namespace neo_filter {
+#include <neo_ros_pc2/datatypes.h>
+#include <neo_ros_pc2/line_segment.h>
 
-struct Config {
-    bool ClosedPointFilter;
-    int ClosePointDistance;
-    int MaxDistance;
+class LineExtraction {
+public:
 
-    bool MedianFilter;
-    int MedianFilterWindowsSize;
 
+    LineExtraction(PointCloudXY point_xy);
+    // split the pointcloud
+    void split(LineSegment);
+    // merge the pointcloud
+    void merge();
+    // collinearity test
+    float collinearityTest(LineSegment seg1, LineSegment seg2) const;
+    // interpolation
+    void interpolation();
+
+    //PointCloudXY point_cloud_origin_;
+    PointCloudXY point_cloud_interpolation_;
+private:
+    std::vector<LineSegment> line_segment_vector_;
 };
 
-};
-
-
-#endif  // end _NEO_FILTER_H_
+#endif // _LINE_EXTRACTION_H_
