@@ -5,11 +5,11 @@
 CATKIN_WS="$1"
 
 if [ -e "$CATKIN_WS" ]; then
-	echo "Install Neo ros package into $CATKIN_WS"
+    echo "Install Neo ros package into $CATKIN_WS"
 else
-	echo "$CATKIN_WS does not exist."
-	echo "Please select an existing initialized Catkin Workspace."
-	exit 1
+    echo "$CATKIN_WS does not exist."
+    echo "Please select an existing initialized Catkin Workspace."
+    exit 1
 fi
 
 cd "$CATKIN_WS"
