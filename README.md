@@ -73,6 +73,20 @@ roslaunch neo_ros_pc2 view_neo_pc2.launch
 roslaunch neo_ros_pc2 view_neo_laser_scan.launch
 ```
 
+## Line Extraction and Interpolation
+### Usage
+
+You can use ros dynamic reconfigure to change relative parameters.
+
+```bash
+rosrun rqt_reconfigure rqt_reconfigure
+```
+
+### Reference
+1. [sweep-learning-examples]: https://github.com/scanse/sweep-learning-examples
+
+2. [A comparison of line extraction algorithms using 2D laser rangefinder for indoor mobile robotics]: http://ieeexplore.ieee.org/document/1545234/
+
 ## Environment
 
 1. OS: ubuntu 16.04
