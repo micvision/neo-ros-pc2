@@ -34,16 +34,21 @@
 #include <dynamic_reconfigure/server.h>
 #include <neo_ros_pc2/FilterConfig.h>
 #include <neo_ros_pc2/neo_filter.h>
+#include <neo_ros_pc2/datatypes.h>
+
 
 typedef dynamic_reconfigure::Server<neo_ros_pc2::FilterConfig> FilterConfigServer;
 
 neo_filter::Config filter_config;
 
 void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
+    // filter config
     filter_config.MedianFilter = config.median_filter_;
     filter_config.MedianFilterWindowsSize = config.median_filter_half_windows_size_ * 2 + 1;
     filter_config.ClosedPointFilter = config.close_point_filter_;
     filter_config.ClosePointDistance = config.close_point_distance_;
+    filter_config.MaxDistance = config.max_distance_;
+
 
     ROS_DEBUG("Reconfigure Request:");
     ROS_DEBUG("  median_filter: %s", config.median_filter_ ? "True" : "False");
@@ -54,18 +59,69 @@ void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
 }
 
 
-void median_filter(pcl::PointCloud<pcl::PointXYZ> *pointcloud) {
-    ROS_DEBUG("median filter");
+float median_value(PointCloudXY::Ptr pointcloud) {
+    float value;
+    int large, equal, less;
+
+    for (unsigned int i = 0; i < pointcloud->points.size(); i++) {
+        large = 0; equal = 0; less = 0;
+        value = pointcloud->points[i].y;
+        for (unsigned int j = 0; j < pointcloud->points.size(); j++) {
+            if (i == j) continue;
+            if (pointcloud->points[j].y == value) equal++;
+            else if (pointcloud->points[j].y > value) large++;
+            else less++;
+        }
+        if (large > less + equal || less > large + equal)
+            continue;
+        else
+            break;
+    }
+    return value;
+}
+
+
+void median_filter(PointCloudXY::Ptr pointcloud) {
+    int half_windows_size;
+    //pcl::PointCloud<pcl::PointXYZ> temp_pc;
+    PointCloudXY::Ptr temp_pc(new PointCloudXY);
+
+    half_windows_size = std::floor(filter_config.MedianFilterWindowsSize / 2);
+    pcl::copyPointCloud(*pointcloud, *temp_pc);
+
+    for (int i = 0; i < (int)temp_pc->points.size(); i++) {
+        // construct the fix filter window
+        PointCloudXY::Ptr fixed_windows_size_pc(new PointCloudXY);
+        for (int j = i - half_windows_size; j <= i + half_windows_size; j++) {
+            if (j < 0)
+                fixed_windows_size_pc->push_back(temp_pc->points[j+temp_pc->points.size()]);
+            else if (j >= (int)temp_pc->points.size())
+                fixed_windows_size_pc->push_back(temp_pc->points[j-temp_pc->points.size()]);
+            else
+                fixed_windows_size_pc->push_back(temp_pc->points[j]);
+        }
+
+        pointcloud->points[i].x = temp_pc->points[i].x;
+        pointcloud->points[i].y = median_value(fixed_windows_size_pc);
+        // std::cout << i << ": " << pointcloud->points[i].x << " "
+        //     << pointcloud->points[i].y << " "
+        //     << "origin point: "
+        //     << temp_pc->points[i].x << " "
+        //     << temp_pc->points[i].y << std::endl;
+    }
 
 }
 
 void publish_scan(ros::Publisher *pub,
                   const neo::scan *scan, std::string frame_id)
 {
-    pcl::PointCloud <pcl::PointXYZ> cloud;
-    pcl::PointCloud <pcl::PointXYZ> cloud_polar;
+    PointCloudXYZ::Ptr pub_cloud(new PointCloudXYZ);
+
+    PointCloudXY::Ptr polar_cloud(new PointCloudXY);
+    PointCloudXY::Ptr cartesian_cloud(new PointCloudXY);
+
     sensor_msgs::PointCloud2 cloud_msg;
-    ros::Time ros_time_now = ros::Time::now();
+    // ros::Time ros_time_now = ros::Time::now();
 
 
     float angle;
@@ -74,50 +130,64 @@ void publish_scan(ros::Publisher *pub,
     float y;
     int i = 0;
 
-    cloud.height = 1;
-    cloud.width = scan->samples.size();
-    cloud.points.resize(cloud.width * cloud.height);
-
-    cloud_polar.height = 1;
-    cloud_polar.width = cloud.width;
-    cloud_polar.resize(cloud_polar.width * cloud_polar.height);
+    polar_cloud->height = 1;
+    polar_cloud->width = scan->samples.size();
+    polar_cloud->resize(polar_cloud->width * polar_cloud->height);
 
     for (const neo::sample& sample : scan->samples)
     {
         range = sample.distance;
+        angle = ((float)sample.angle / 1000); //millidegrees to degrees
         if (filter_config.ClosedPointFilter) {
-            if (range < filter_config.ClosePointDistance)
+            if (range < filter_config.ClosePointDistance || range > filter_config.MaxDistance)
                 continue;
         }
-        angle = ((float)sample.angle / 1000); //millidegrees to degrees
 
-        //Polar to Cartesian Conversion
-        x = (range * cos(DEG2RAD(angle))) / 100;
-        y = (range * sin(DEG2RAD(angle))) / 100;
+        polar_cloud->points[i].y = float(range);
+        polar_cloud->points[i].x = angle;
 
-        cloud.points[i].x = x;
-        cloud.points[i].y = y;
-
-        cloud_polar.points[i].x = float(range);
-        cloud_polar.points[i].y = angle;
+        if (i >= 1) {
+            if (angle == polar_cloud->points[i-1].x) return;
+        }
         i++;
     }
-    cloud.width = i;
-    cloud_polar.width = i;
-    cloud.points.resize(i * cloud.height);
-    cloud_polar.points.resize(i * cloud_polar.height);
+
+    if (i <= 1) return;
+    polar_cloud->width = i;
+    polar_cloud->points.resize(i * polar_cloud->height);
+
     if (filter_config.MedianFilter)
-        median_filter(&cloud_polar);
+        median_filter(polar_cloud);
 
-    //Convert pcl PC to ROS PC2
-    pcl::toROSMsg(cloud, cloud_msg);
-    cloud_msg.header.frame_id = frame_id;
-    cloud_msg.header.stamp = ros_time_now;
+    cartesian_cloud->height = 1;
+    cartesian_cloud->width = i;
+    cartesian_cloud->points.resize(cartesian_cloud->width * cartesian_cloud->height);
 
-    ROS_DEBUG("Publishing a full scan");
-    ROS_DEBUG("Scan number: %d", i);
-    pub->publish(cloud_msg);
+    for (size_t index = 0; index < polar_cloud->points.size(); index++) {
+        angle = polar_cloud->points[index].x;
+        range = polar_cloud->points[index].y;
+
+        // Polar to Cartesian Conversion
+        x = ((float)range * cos(DEG2RAD(angle)));
+        y = ((float)range * sin(DEG2RAD(angle)));
+        cartesian_cloud->points[index].x = x;
+        cartesian_cloud->points[index].y = y;
+    }
+
+		for (size_t ii = 0; ii < cartesian_cloud->points.size(); ii++) {
+			cartesian_cloud->points[ii].x /= 100;
+			cartesian_cloud->points[ii].y /= 100;
+		}
+		pcl::copyPointCloud(*cartesian_cloud, *pub_cloud);
+	//Convert pcl PC to ROS PC2
+	pcl::toROSMsg(*pub_cloud, cloud_msg);
+	cloud_msg.header.frame_id = frame_id;
+	cloud_msg.header.stamp = ros::Time::now();
+
+	ROS_DEBUG("Publishing a full scan");
+	pub->publish(cloud_msg);
 }
+
 
 
 int main(int argc, char *argv[]) try
@@ -143,6 +213,7 @@ int main(int argc, char *argv[]) try
 
     //Setup Publisher
     ros::Publisher scan_pub = nh.advertise<sensor_msgs::PointCloud2>("pc2", 1000);
+    //ros::Publisher interpolation_pub = nh.advertise<sensor_msgs::PointCloud2>("interpolation", 1000);
 
     //Create Neo Driver Object
     neo::neo device{serial_port.c_str()};
@@ -164,8 +235,8 @@ int main(int argc, char *argv[]) try
 
     while (ros::ok())
     {
-        //Grab Full Scan
         const neo::scan scan = device.get_scan();
+        //Grab Full Scan
 
         publish_scan(&scan_pub, &scan, frame_id);
 
