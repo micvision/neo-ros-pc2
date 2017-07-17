@@ -6,6 +6,7 @@ namespace neo_filter {
 struct Config {
     bool ClosedPointFilter;
     int ClosePointDistance;
+    int MaxDistance;
 
     bool MedianFilter;
     int MedianFilterWindowsSize;
