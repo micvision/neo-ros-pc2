@@ -70,7 +70,7 @@ void LineExtraction::split(LineSegment line_segment) {
         }
 
         for (size_t i = 0; i < line_segment_vector_.size(); i++) {
-            if (std::abs(line_segment.checksum - line_segment_vector_[i].checksum) <= 1e-5) {
+            if (line_segment.id_ == line_segment_vector_[i].id_) {
                 line_segment_vector_.insert(line_segment_vector_.begin() + i+1, right);
                 line_segment_vector_.erase(line_segment_vector_.begin() + i);
                 line_segment_vector_.insert(line_segment_vector_.begin() + i, left);

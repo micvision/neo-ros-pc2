@@ -29,6 +29,7 @@
 
 class LineSegment {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     LineSegment() {}
     LineSegment(PointCloudXY point_xy, bool isMergedSeg = false);
 
@@ -69,12 +70,13 @@ public:
     
     LineParam line_param_;
     float x_start_, x_end_;
-    float checksum;
+    unsigned int id_;
+    static unsigned int next_id_;
 
 public:
     float largest_square_distance_;
     unsigned int index_;
-bool merged_point_cloud_;
+    bool merged_point_cloud_;
 
 };
 

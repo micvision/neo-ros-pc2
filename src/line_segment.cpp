@@ -50,14 +50,17 @@ float pointsSquareDistanceToLine(pcl::PointXY point, pcl::PointXY start, pcl::Po
 }
 
 LineSegment::LineSegment (PointCloudXY point_xy, bool isMergedSeg)
-    : points_(point_xy), checksum(0.0f),
+    : points_(point_xy), id_(next_id_),
     merged_point_cloud_(isMergedSeg) {
     maxPointsSquareDistance();
 
     updateLineParam(isMergedSeg);
     maxSquareDistancePointToLine();
+    next_id_++;
 
 }
+
+unsigned int LineSegment::next_id_ = 0;
 
 void LineSegment::maxSquareDistancePointToLine() {
     float biggest_distance = 0;
@@ -105,7 +108,7 @@ void LineSegment::maxPointsSquareDistance() {
         if (points_.points[i].x > x_max_)
             x_max_ = points_.points[i].x;
 
-        checksum += points_.points[i].x + points_.points[i].y;
+        //checksum += points_.points[i].x + points_.points[i].y;
 
 
     }
