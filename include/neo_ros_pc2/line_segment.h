@@ -29,6 +29,7 @@
 
 class LineSegment {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     LineSegment() {}
     LineSegment(PointCloudXY point_xy, bool isMergedSeg = false);
 

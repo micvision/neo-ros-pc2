@@ -27,6 +27,7 @@
 
 #include <neo_ros_pc2/datatypes.h>
 #include <neo_ros_pc2/line_segment.h>
+#include <Eigen/StdVector>
 
 class LineExtraction {
 public:
@@ -45,7 +46,7 @@ public:
     //PointCloudXY point_cloud_origin_;
     PointCloudXY point_cloud_interpolation_;
 private:
-    std::vector<LineSegment> line_segment_vector_;
+    std::vector<LineSegment, Eigen::aligned_allocator<LineSegment> > line_segment_vector_;
 };
 
 #endif // _LINE_EXTRACTION_H_
