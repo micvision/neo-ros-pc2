@@ -156,7 +156,7 @@ void publish_scan(ros::Publisher *pub,
         polar_cloud->points[i].x = angle;
 
         if (i >= 1) {
-            if (angle == polar_cloud->points[i-1].x) return;
+            if (angle == polar_cloud->points[i-1].x) continue;
         }
         i++;
     }
