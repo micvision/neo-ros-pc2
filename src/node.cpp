@@ -44,7 +44,7 @@ typedef dynamic_reconfigure::Server<neo_ros_pc2::FilterConfig> FilterConfigServe
 neo_filter::Config filter_config;
 line_param::Config line_param_config;
 
-void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
+void callback(const neo_ros_pc2::FilterConfig &config, uint32_t level) {
     // filter config
     filter_config.MedianFilter = config.median_filter_;
     filter_config.MedianFilterWindowsSize = config.median_filter_half_windows_size_ * 2 + 1;
@@ -68,7 +68,7 @@ void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
 }
 
 
-float median_value(PointCloudXY::Ptr pointcloud) {
+float median_value(const PointCloudXY::Ptr pointcloud) {
     float value;
     int large, equal, less;
 
@@ -90,7 +90,7 @@ float median_value(PointCloudXY::Ptr pointcloud) {
 }
 
 
-void median_filter(PointCloudXY::Ptr pointcloud) {
+void median_filter(const PointCloudXY::Ptr pointcloud) {
     int half_windows_size;
     //pcl::PointCloud<pcl::PointXYZ> temp_pc;
     PointCloudXY::Ptr temp_pc(new PointCloudXY);

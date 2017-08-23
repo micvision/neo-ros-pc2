@@ -31,7 +31,7 @@ class LineSegment {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     LineSegment() {}
-    LineSegment(PointCloudXY point_xy, bool isMergedSeg = false);
+    LineSegment(const PointCloudXY& point_xy, bool isMergedSeg = false);
 
     // the max distance of the points to the line
     void maxSquareDistancePointToLine();
@@ -40,14 +40,14 @@ public:
 
     // set start point
     void setPointStart(float x = 0, float y = 0);
-    void setPointStart(pcl::PointXY point_xy);
-    float getPointStartX();
-    float getPointStartY();
+    void setPointStart(const pcl::PointXY& point_xy);
+    float getPointStartX() const;
+    float getPointStartY() const;
     // set end point
     void setPointEnd(float x = 0, float y = 0);
-    void setPointEnd(pcl::PointXY point_xy);
-    float getPointEndX();
-    float getPointEndY();
+    void setPointEnd(const pcl::PointXY& point_xy);
+    float getPointEndX() const;
+    float getPointEndY() const;
 
 
     // set line parameter
