@@ -27,12 +27,12 @@
 //#include <pcl/common/geometry.h>
 
 // calculate the square distance of two points
-float pointsSquaredDistance(pcl::PointXY p1, pcl::PointXY p2) {
+float pointsSquaredDistance(const pcl::PointXY& p1, const pcl::PointXY& p2) {
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
 }
 
 // calculate the distance of the point to the line(the line define by to points)
-float pointsSquareDistanceToLine(pcl::PointXY point, pcl::PointXY start, pcl::PointXY end) {
+float pointsSquareDistanceToLine(const pcl::PointXY& point, const pcl::PointXY& start, const pcl::PointXY& end) {
     float line_segment_square_distance;
     pcl::PointXY temp;
     line_segment_square_distance = pointsSquaredDistance(start, end);
@@ -49,7 +49,7 @@ float pointsSquareDistanceToLine(pcl::PointXY point, pcl::PointXY start, pcl::Po
 
 }
 
-LineSegment::LineSegment (PointCloudXY point_xy, bool isMergedSeg)
+LineSegment::LineSegment (const PointCloudXY& point_xy, bool isMergedSeg)
     : points_(point_xy), id_(next_id_),
     merged_point_cloud_(isMergedSeg) {
     maxPointsSquareDistance();
@@ -129,14 +129,14 @@ void LineSegment::setPointStart(float x, float y) {
     point_start_.y = y;
 }
 
-void LineSegment::setPointStart(pcl::PointXY point_xy) {
+void LineSegment::setPointStart(const pcl::PointXY& point_xy) {
     point_start_ = point_xy;
 }
 
-float LineSegment::getPointStartX() {
+float LineSegment::getPointStartX() const {
     return point_start_.x;
 }
-float LineSegment::getPointStartY() {
+float LineSegment::getPointStartY() const {
     return point_start_.y;
 }
 
@@ -145,13 +145,13 @@ void LineSegment::setPointEnd(float x, float y) {
     point_end_.y = y;
 }
 
-void LineSegment::setPointEnd(pcl::PointXY point_xy) {
+void LineSegment::setPointEnd(const pcl::PointXY& point_xy) {
     point_end_ = point_xy;
 }
-float LineSegment::getPointEndX() {
+float LineSegment::getPointEndX() const {
     return point_end_.x;
 }
-float LineSegment::getPointEndY() {
+float LineSegment::getPointEndY() const {
     return point_end_.y;
 }
 

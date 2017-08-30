@@ -29,11 +29,11 @@
 extern line_param::Config line_param_config;
 //#define DEBUG
 
-inline float distance(pcl::PointXY x, pcl::PointXY y) {
+inline float distance(const pcl::PointXY& x, const pcl::PointXY& y) {
     return sqrt((x.x - y.x) * (x.x - y.x) + (x.y - y.y) * (x.y - y.y));
 }
 
-LineSegment slice(LineSegment seg, int start, int end = 0) {
+LineSegment slice(const LineSegment& seg, int start, int end = 0) {
     PointCloudXY cloud;
     if (0 == end) end = seg.points_.points.size();
 
@@ -43,7 +43,7 @@ LineSegment slice(LineSegment seg, int start, int end = 0) {
     return LineSegment(cloud);
 }
 
-LineExtraction::LineExtraction(PointCloudXY point_xy) {
+LineExtraction::LineExtraction(const PointCloudXY& point_xy) {
     LineSegment line_segment(point_xy);
     line_segment_vector_.push_back(line_segment);
     split(line_segment);
@@ -51,7 +51,7 @@ LineExtraction::LineExtraction(PointCloudXY point_xy) {
     interpolation();
 }
 
-void LineExtraction::split(LineSegment line_segment) {
+void LineExtraction::split(const LineSegment& line_segment) {
     if (line_segment.points_.points.size() <= 2)
         return;
     LineSegment left, right;
@@ -213,7 +213,7 @@ void LineExtraction::merge() {
 
 }
 
-float LineExtraction::collinearityTest(LineSegment seg1, LineSegment seg2) const {
+float LineExtraction::collinearityTest(const LineSegment& seg1, const LineSegment& seg2) const {
     pcl::PointXY A1, A2, B1, B2;
     float t1, t2, t3;
     A1 = seg1.point_start_; A2 = seg1.point_end_;

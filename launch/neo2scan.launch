@@ -17,9 +17,9 @@
             min_height: -1.0
             max_height: 1.0
 
-            angle_min: -3.14 # -M_PI/2
-            angle_max: 3.14 # M_PI/2
-            angle_increment: 0.001 # M_PI/360.0
+            angle_min: -3.141592653       # -M_PI
+            angle_max:  3.141592653       #  M_PI
+            angle_increment: 0.0087266463  # M_PI/360.0, 0.5 deg resolution
             range_min: 0.0
             range_max: 40.0
             use_inf: true

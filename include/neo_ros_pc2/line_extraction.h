@@ -33,13 +33,13 @@ class LineExtraction {
 public:
 
 
-    LineExtraction(PointCloudXY point_xy);
+    LineExtraction(const PointCloudXY& point_xy);
     // split the pointcloud
-    void split(LineSegment);
+    void split(const LineSegment&);
     // merge the pointcloud
     void merge();
     // collinearity test
-    float collinearityTest(LineSegment seg1, LineSegment seg2) const;
+    float collinearityTest(const LineSegment& seg1, const LineSegment& seg2) const;
     // interpolation
     void interpolation();
 
