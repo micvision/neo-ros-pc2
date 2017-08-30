@@ -32,7 +32,7 @@ float pointsSquaredDistance(const pcl::PointXY& p1, const pcl::PointXY& p2) {
 }
 
 // calculate the distance of the point to the line(the line define by to points)
-float pointsSquareDistanceToLine(pcl::PointXY point, pcl::PointXY start, pcl::PointXY end) {
+float pointsSquareDistanceToLine(const pcl::PointXY& point, const pcl::PointXY& start, const pcl::PointXY& end) {
     float line_segment_square_distance;
     pcl::PointXY temp;
     line_segment_square_distance = pointsSquaredDistance(start, end);
