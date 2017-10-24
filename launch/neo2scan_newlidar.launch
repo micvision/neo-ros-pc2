@@ -1,0 +1,37 @@
+<launch>
+
+    <!-- run neo_node node -->
+    <node name="neo_node_pc2"          pkg="neo_ros_pc2"  type="neo_node_pc2" output="screen">
+            <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>
+            <param name="serial_baudrate"     type="int"    value="230400"/>
+            <param name="frame_id"            type="string" value="laser_frame"/>
+    </node>
+
+    <!-- run pointcloud_to_laserscan node -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+
+        <remap from="cloud_in" to="pc2"/>
+        <rosparam>
+            target_frame: laser_frame # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.001
+            min_height: -1.0
+            max_height: 1.0
+
+            angle_min: -3.141592653         # -M_PI
+            angle_max:  3.141592653         #  M_PI
+            angle_increment: 0.017453293    # M_PI/180.0, 1 deg resulotion
+            range_min: 0.0
+            range_max: 40.0
+            use_inf: true
+
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 0
+        </rosparam>
+
+    </node>
+
+</launch>
+

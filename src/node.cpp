@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) try
     //ros::Publisher interpolation_pub = nh.advertise<sensor_msgs::PointCloud2>("interpolation", 1000);
 
     //Create Neo Driver Object
-    neo::neo device{serial_port.c_str()};
+    neo::neo device{serial_port.c_str(), serial_baudrate};
     ROS_INFO("Device connect successful!");
 
     //Send Rotation Speed
