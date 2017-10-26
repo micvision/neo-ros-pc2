@@ -10,6 +10,7 @@ For a quick installation on Linux:
 
 ```bash
 # clone the neo-sdk repository
+# if your using new lidar, you must checkout to `newlidar` branch
 git clone https://github.com/micvision/neo-sdk
 
 # enter the libneo directory
@@ -55,7 +56,7 @@ transform to `scan`(`sensor_msgs/LaserScan` msg) via [pointcloud_to_laserscan](h
 
 ## Usage
 1. Serial port
-  If the serial port on your computer is not `/dev/ttyUSB0`, change the serial_port in launch file.
+  If the serial port on your computer is not `/dev/ttyUSB0`, change the `serial_port` in launch file.
 
 2. Run without visible(without rviz):
 ``` bash
@@ -63,6 +64,10 @@ transform to `scan`(`sensor_msgs/LaserScan` msg) via [pointcloud_to_laserscan](h
 roslaunch neo_ros_pc2 neo.launch
 # with `scan` topic
 roslaunch neo_ros_pc2 neo2scan.launch
+
+# using new lidar, just like above
+roslaunch neo_ros_pc2 neo_newlidar.launch
+roslaunch neo_ros_pc2 neo2scan_newlidar.launch
 ```
 
 3. Run with rviz:
@@ -71,6 +76,10 @@ roslaunch neo_ros_pc2 neo2scan.launch
 roslaunch neo_ros_pc2 view_neo_pc2.launch
 # with `scan` topic
 roslaunch neo_ros_pc2 view_neo_laser_scan.launch
+
+# using new lidar, just like above, the main difference is baudrate
+roslaunch neo_ros_pc2 view_neo_pc2_newlidar.launch
+roslaunch neo_ros_pc2 view_neo_laser_scan_newlidar.launch
 ```
 
 ## Environment
