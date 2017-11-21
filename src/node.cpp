@@ -59,6 +59,7 @@ void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
       config.close_point_filter_ ? "True" : "False");
   ROS_DEBUG("  close_point_distance: %d", config.close_point_distance_);
 
+  ROS_DEBUG("level: %d", level);
 }
 
 
