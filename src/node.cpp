@@ -43,21 +43,21 @@ neo_filter::Config filter_config;
 
 void callback(neo_ros_pc2::FilterConfig &config, uint32_t level) {
   // filter config
-  filter_config.MedianFilter = config.median_filter_;
+  filter_config.MedianFilter = config.median_filter;
   filter_config.MedianFilterWindowsSize =
-    config.median_filter_half_windows_size_ * 2 + 1;
-  filter_config.ClosedPointFilter = config.close_point_filter_;
-  filter_config.ClosePointDistance = config.close_point_distance_;
-  filter_config.MaxDistance = config.max_distance_;
+    config.median_filter_half_windows_size * 2 + 1;
+  filter_config.ClosedPointFilter = config.close_point_filter;
+  filter_config.ClosePointDistance = config.close_point_distance;
+  filter_config.MaxDistance = config.max_distance;
 
 
   ROS_DEBUG("Reconfigure Request:");
-  ROS_DEBUG("  median_filter: %s", config.median_filter_ ? "True" : "False");
+  ROS_DEBUG("  median_filter: %s", config.median_filter ? "True" : "False");
   ROS_DEBUG("  median_filter_windows_size_: %d",
-      config.median_filter_half_windows_size_);
+      config.median_filter_half_windows_size);
   ROS_DEBUG("  close_point_filter: %s",
-      config.close_point_filter_ ? "True" : "False");
-  ROS_DEBUG("  close_point_distance: %d", config.close_point_distance_);
+      config.close_point_filter ? "True" : "False");
+  ROS_DEBUG("  close_point_distance: %d", config.close_point_distance);
 
   ROS_DEBUG("level: %d", level);
 }
