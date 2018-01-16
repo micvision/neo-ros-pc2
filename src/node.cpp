@@ -143,7 +143,7 @@ void publish_scan(ros::Publisher *pub,
     for (const neo::sample& sample : scan->samples)
     {
         range = sample.distance;
-        angle = ((float)sample.angle / 1000); //millidegrees to degrees
+        angle = ((float)sample.angle);  // degrees
         if (filter_config.ClosedPointFilter) {
             if (range < filter_config.ClosePointDistance ||
                 range > filter_config.MaxDistance)
