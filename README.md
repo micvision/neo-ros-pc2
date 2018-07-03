@@ -47,6 +47,18 @@ chmod +x installNeoROS.sh
 ./installNeoROS.sh (catkin workspace)
 ```
 
+or, we can use the method step by step
+```shell
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/tyuownu/neo-ros-pc2
+
+cd ..
+
+catkin_make
+source devel/setup.bash
+```
+
 
 ## Neo ROS Driver and Node
 
@@ -61,25 +73,18 @@ transform to `scan`(`sensor_msgs/LaserScan` msg) via [pointcloud_to_laserscan](h
 2. Run without visible(without rviz):
 ``` bash
 # with `pc2` topic
-roslaunch neo_ros_pc2 neo.launch
+roslaunch neo_ros_pc2 neo_f1.launch
 # with `scan` topic
-roslaunch neo_ros_pc2 neo2scan.launch
-
-# using new lidar, just like above
-roslaunch neo_ros_pc2 neo_newlidar.launch
-roslaunch neo_ros_pc2 neo2scan_newlidar.launch
+roslaunch neo_ros_pc2 neo2scan_f1.launch
 ```
 
 3. Run with rviz:
 ```bash
 # with `pc2` topic
-roslaunch neo_ros_pc2 view_neo_pc2.launch
-# with `scan` topic
-roslaunch neo_ros_pc2 view_neo_laser_scan.launch
+roslaunch neo_ros_pc2 view_neo_pc2_f1.launch
 
-# using new lidar, just like above, the main difference is baudrate
-roslaunch neo_ros_pc2 view_neo_pc2_newlidar.launch
-roslaunch neo_ros_pc2 view_neo_laser_scan_newlidar.launch
+# with `scan` topic
+roslaunch neo_ros_pc2 view_neo_laser_scan_f1.launch
 ```
 
 ## Environment
