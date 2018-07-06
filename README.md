@@ -70,6 +70,12 @@ transform to `scan`(`sensor_msgs/LaserScan` msg) via [pointcloud_to_laserscan](h
 1. Serial port
   If the serial port on your computer is not `/dev/ttyUSB0`, change the `serial_port` in launch file.
 
+  And then, give the permission to the serial port.
+
+``` bash
+sudo chmod 777 /dev/ttyUSB0
+```
+
 2. Run without visible(without rviz):
 ``` bash
 # with `pc2` topic
